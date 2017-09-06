@@ -69,7 +69,7 @@ namespace Gherkin
                     var separatorToken = node.GetTokens(TokenType.DocStringSeparator).First();
                     var contentType = separatorToken.MatchedText.Length == 0 ? null : separatorToken.MatchedText;
                     var lineTokens = node.GetTokens(TokenType.Other);
-                    var content = string.Join(Environment.NewLine, lineTokens.Select(lt => lt.MatchedText));
+                    var content = string.Join(Environment.NewLine, lineTokens.Select(lt => lt.MatchedText).ToArray());
 
                     return CreateDocString(GetLocation(separatorToken), contentType, content, node);
                 }
@@ -134,9 +134,9 @@ namespace Gherkin
                     var lineTokens = node.GetTokens(TokenType.Other);
 
                     // Trim trailing empty lines
-                    lineTokens = lineTokens.Reverse().SkipWhile(t => string.IsNullOrWhiteSpace(t.MatchedText)).Reverse();
+                    lineTokens = lineTokens.Reverse().SkipWhile(t => t.MatchedText == null || t.MatchedText.Trim().Length == 0).Reverse();
 
-                    return string.Join(Environment.NewLine, lineTokens.Select(lt => lt.MatchedText));
+                    return string.Join(Environment.NewLine, lineTokens.Select(lt => lt.MatchedText).ToArray());
                 }
                 case RuleType.Feature:
                 {

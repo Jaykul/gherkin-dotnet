@@ -84,11 +84,11 @@ namespace Gherkin
                 if (!isBeforeFirst)
                 {
                     int trimmedStart;
-                    var cellText = Trim(item.Item1, out trimmedStart);
-                    var cellPosition = item.Item2 + trimmedStart;
+                    var cellText = Trim(item.Text, out trimmedStart);
+                    var cellPosition = item.Position + trimmedStart;
 
                     if (cellText.Length == 0)
-                        cellPosition = item.Item2;
+                        cellPosition = item.Position;
 
                     yield return new GherkinLineSpan(Indent + cellPosition + 1, cellText);
                 }
@@ -97,9 +97,9 @@ namespace Gherkin
             }
         }
 
-        private IEnumerable<Tuple<string, int>> SplitCells(string row)
+        private IEnumerable<Cell> SplitCells(string row)
         {
-#if NET45
+#if NET45 || NET35
             var rowEnum = row.GetEnumerator();                        
 #endif
 
@@ -114,7 +114,7 @@ namespace Gherkin
                 pos++;
                 char c = rowEnum.Current;
                 if (c.ToString() == GherkinLanguageConstants.TABLE_CELL_SEPARATOR) {
-                    yield return Tuple.Create(cell, startPos);
+                    yield return new Cell(cell, startPos);
                     cell = "";
                     startPos = pos;
                 } else if (c == GherkinLanguageConstants.TABLE_CELL_ESCAPE_CHAR) {
@@ -133,7 +133,7 @@ namespace Gherkin
                     cell += c;
                 }
             }
-            yield return Tuple.Create(cell, startPos);
+            yield return new Cell(cell, startPos);
         }
 
         private string Trim(string s, out int trimmedStart)
@@ -143,6 +143,18 @@ namespace Gherkin
                 trimmedStart++;
 
             return s.Trim();
+        }
+
+        private struct Cell
+        {
+            public readonly string Text;
+            public readonly int Position;
+
+            public Cell(string value, int position)
+            {
+                Text = value;
+                Position = position;
+            }
         }
     }
 }

@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">netstandard1.5;net45</TargetFrameworks>
+    <TargetFrameworks Condition="'$(OS)' == 'Windows_NT'">netstandard1.5;net45;net35</TargetFrameworks>
     <TargetFrameworks Condition="'$(OS)' == 'Unix'">netstandard1.5</TargetFrameworks>
   </PropertyGroup>
 

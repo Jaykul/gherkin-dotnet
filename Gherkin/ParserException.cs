@@ -121,7 +121,7 @@ namespace Gherkin
 
         private static string GetMessage(ParserException[] errors)
         {
-            return "Parser errors:" + Environment.NewLine + string.Join(Environment.NewLine, errors.Select(e => e.Message));
+            return "Parser errors:" + Environment.NewLine + string.Join(Environment.NewLine, errors.Select(e => e.Message).ToArray());
         }
     }
 }

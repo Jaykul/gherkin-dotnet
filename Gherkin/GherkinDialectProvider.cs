@@ -34,16 +34,24 @@ namespace Gherkin
             // ReSharper restore InconsistentNaming
         }
 
-        private readonly Lazy<GherkinDialect> defaultDialect;
+        private GherkinDialect defaultDialect;
+        private string defaultLanguage;
 
         public GherkinDialect DefaultDialect
         {
-            get { return defaultDialect.Value; }
+            get {
+                if(null == defaultDialect)
+                {
+                    defaultDialect = GetDialect(defaultLanguage, null);
+                }
+                return defaultDialect;
+            }
         }
 
         public GherkinDialectProvider(string defaultLanguage = "en")
         {
-            defaultDialect = new Lazy<GherkinDialect>(() => GetDialect(defaultLanguage, null));
+            this.defaultDialect = null;
+            this.defaultLanguage = defaultLanguage;
         }
 
         public virtual GherkinDialect GetDialect(string language, Location location)
@@ -56,7 +64,7 @@ namespace Gherkin
         {
             const string languageFileName = "gherkin-languages.json";
             
-            #if NET45            
+            #if NET45 || NET35 
             var assembly = typeof(GherkinDialectProvider).Assembly;
             var resourceStream = assembly.GetManifestResourceStream(typeof(GherkinDialectProvider), languageFileName);                        
             #endif
